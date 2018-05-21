@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">AudioRecorder</string>
     <string name="record_audio">Record Audio</string>
+    <string name="audio_permission_rationale">App requires recording an audio.</string>
 </resources>
