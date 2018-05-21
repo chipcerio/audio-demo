@@ -10,7 +10,6 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
-import java.io.File
 
 class MainActivity : AppCompatActivity(), Recorder.OnRecordingListener, AudioAdapter.OnAudioClickListener {
 
@@ -18,7 +17,10 @@ class MainActivity : AppCompatActivity(), Recorder.OnRecordingListener, AudioAda
 
     private val RC_AUDIO_PERM = 100
 
+    private var recording = false
+
     private lateinit var recorder: Recorder
+    private lateinit var player: Player
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +29,7 @@ class MainActivity : AppCompatActivity(), Recorder.OnRecordingListener, AudioAda
         setupRecyclerView()
 
         recorder = Recorder(generateFilename(), this)
+        player = Player(audioDir())
     }
 
     private fun setupRecyclerView() {
@@ -36,21 +39,17 @@ class MainActivity : AppCompatActivity(), Recorder.OnRecordingListener, AudioAda
         }
     }
 
-    private fun listFiles(): MutableList<String> {
-        val file = File(filesDir.absolutePath)
-        return if (file.exists() && file.isDirectory) {
-            file.list().toMutableList()
-        } else {
-            mutableListOf()
-        }
-    }
-
     override fun onRecording(isRecording: Boolean) {
         Log.d(TAG, "isRecording: $isRecording")
+        recording = isRecording
     }
 
     override fun onAudioClick(filename: String) {
-        Log.d(TAG, "onAudioClick: $filename")
+        if (!recording) {
+            player.play(filename)
+        } else {
+            toast("App is recording")
+        }
     }
 
     override fun onRequestPermissionsResult(rc: Int, perms: Array<out String>, res: IntArray) {

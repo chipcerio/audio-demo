@@ -9,8 +9,7 @@ class Recorder(private var filename: String, private val listener: OnRecordingLi
 
     private val TAG = "Recorder"
 
-    private var isRecording: Boolean = false
-
+    private var isRecording = false
 
     private var recorder: MediaRecorder? = null
 
