@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 
 
-class AudioAdapter() : RecyclerView.Adapter<AudioAdapter.ViewHolder>() {
+class AudioAdapter(private val filenames: MutableList<String>, private val listener: OnAudioClickListener) : RecyclerView.Adapter<AudioAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context)
@@ -15,18 +15,31 @@ class AudioAdapter() : RecyclerView.Adapter<AudioAdapter.ViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        return 0
+        return filenames.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(filenames[position])
+    }
+
+    fun add(filename: String, position: Int) {
+        filenames.add(filename)
+        notifyItemChanged(position)
     }
 
     inner class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
-        private var src: TextView = view.findViewById(android.R.id.text1)
+        private val textView: TextView = view.findViewById(android.R.id.text1)
 
-        fun bind() {
-
+        fun bind(filename: String) {
+            textView.text = filename
+            view.setOnClickListener {
+                listener.onAudioClick(filename)
+            }
         }
+    }
+
+    interface OnAudioClickListener {
+        fun onAudioClick(filename: String)
     }
 }
