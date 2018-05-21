@@ -18,20 +18,27 @@ class Player(private val dir: String) {
     }
 
     fun play(filename: String) {
-        try {
-            player?.let {
-                it.setDataSource("$dir$filename")
-                it.prepare()
-                it.start()
+        if (!isPlaying) {
+            try {
+                player?.let {
+                    it.setDataSource("$dir$filename")
+                    it.prepare()
+                    it.start()
+                    isPlaying = true
+                }
+            } catch (e: IOException) {
+                Log.e(TAG, "preparing player failed")
             }
-        } catch (e: IOException) {
-            Log.e(TAG, "preparing player failed")
+        } else {
+            stop()
         }
     }
 
     fun stop() {
-        player?.stop()
-        player?.release()
-        player = null
+        player?.let {
+            it.stop()
+            it.release()
+            player = null
+        }
     }
 }
